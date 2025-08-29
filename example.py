@@ -7,12 +7,25 @@ app = NotSoFastAPI(middlewares =[global_middleware])
 
 @app.get("/users")
 def get_user(req, res):
-    # res.status_code = "200 OK"
-    # res.text = "this is response object"
     res.send(status_code= "200 OK", text = "response from get method")
 
-@app.post("/users/{id}")
+def route_middleware(request):
+    print("running route middleware")
+@app.post("/users/{id}", middlewares = [route_middleware])
 def post_user(req, res,id):
-    # print(id)
     res.send(status_code="200 OK", text = f"response from post method")
 
+@app.route()
+class User:
+
+    def __init__(self):
+        pass
+    
+    def get(req, res):
+        res.send("hi aniket i am from class", "200 OK")
+
+    def post(req, res):
+        res.send("this is post method of class")
+        
+    def hello(self):
+        pass
