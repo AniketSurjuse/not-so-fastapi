@@ -17,4 +17,4 @@ Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 Requires-Dist: parse
 
-this is toy implementation of fastapi like backend framework, it does not have async support yet hence the name - NotSoFastAPI!
+This is a toy implementation of fastapi like backend framework, it does not have async support yet hence the name - NotSoFastAPI!
