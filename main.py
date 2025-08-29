@@ -3,6 +3,7 @@ from response import Response
 from parse import parse
 import types
 import inspect
+from request import Request
 
 SUPPORTED_REQ_METHODS = {"GET", 'POST', 'DELETE'}
 
@@ -14,27 +15,28 @@ class NotSoFastAPI:
         
 
     def __call__(self, environ, start_response)->Any:
-        path_name = environ["PATH_INFO"]
-        method = environ["REQUEST_METHOD"]
+        
         response = Response()
+        request =  Request(environ)
+     
         for middleware in self.middlewares:
             if isinstance(middleware , types.FunctionType):
-                middleware(environ)
+                middleware(request)
             else:
                 raise ValueError("you can only pass functions as middleware")
 
         for path, handler_dict in self.routes.items():
-            res = parse(path, environ['PATH_INFO'])
+            res = parse(path, request.path_info)
             #res is empty if path matches but no slug found, dict if slug found and none if path doesn't matches.
             for request_method, handler in handler_dict.items():
-                if request_method==method and res:
-                    # print(self.routes)
+                if request_method==request.request_method and res:
+                    
                     for mw in self.route_middlewares[path][request_method]:
                         if isinstance(mw , types.FunctionType):
-                            mw(environ)
+                            mw(request)
                         else:
                             raise ValueError("you can only pass functions as middleware")
-                    handler(environ, response,**res.named)
+                    handler(request, response,**res.named)
                     return response.as_wsgi(start_response)
         return response.as_wsgi(start_response)
                 

@@ -11,9 +11,11 @@ def get_user(req, res):
 
 def route_middleware(request):
     print("running route middleware")
+
+
 @app.post("/users/{id}", middlewares = [route_middleware])
 def post_user(req, res,id):
-    res.send(status_code="200 OK", text = f"response from post method")
+    res.render("index",{"name":"aniket"})
 
 @app.route()
 class User:
@@ -26,6 +28,6 @@ class User:
 
     def post(req, res):
         res.send("this is post method of class")
-        
+
     def hello(self):
         pass
