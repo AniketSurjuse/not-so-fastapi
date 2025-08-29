@@ -1,33 +1,43 @@
-from main import NotSoFastAPI
+# app.py
+from notsofastapi import NotSoFastAPI
 
-def global_middleware(request):
-    print("this was executed before any route")
+# Create your app
+app = NotSoFastAPI()
 
-app = NotSoFastAPI(middlewares =[global_middleware])
+# --- Define a simple GET route ---
+@app.get("/")
+def home(request, response):
+    response.send("<h1>Hello from NotSoFastAPI!</h1><p>Try <a href='/user/123'>/user/123</a></p>", "200 OK")
+    response.headers.append(("Content-Type", "text/html"))
 
-@app.get("/users")
-def get_user(req, res):
-    res.send(status_code= "200 OK", text = "response from get method")
+# --- Dynamic route with path parameter ---
+@app.get("/user/{user_id}")
+def get_user(request, response, user_id):
+    response.send({
+        "user_id": int(user_id),
+        "name": f"User {user_id}",
+        "endpoint": f"GET /user/{user_id}"
+    })
 
-def route_middleware(request):
-    print("running route middleware")
+# --- POST route that reads JSON body ---
+@app.post("/echo")
+def echo(request, response):
+    # Request body is auto-parsed into request.body (if JSON)
+    response.json({
+        "message": "Here's what you sent",
+        "data": request.body,
+        "queries": dict(request.queries)
+    })
 
+# --- Class-based view ---
+@app.route("/api")
+class API:
+    def GET(request, response):
+        response.send({"status": "API is running"})
 
-@app.post("/users/{id}", middlewares = [route_middleware])
-def post_user(req, res,id):
-    res.render("index",{"name":"aniket"})
+    def POST(request, response):
+        response.send({
+            "received": request.body,
+            "method": "POST to /api"
+        })
 
-@app.route()
-class User:
-
-    def __init__(self):
-        pass
-    
-    def get(req, res):
-        res.send("hi aniket i am from class", "200 OK")
-
-    def post(req, res):
-        res.send("this is post method of class")
-
-    def hello(self):
-        pass

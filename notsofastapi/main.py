@@ -1,9 +1,9 @@
 from typing import Any
-from response import Response
+from notsofastapi.response import Response
 from parse import parse
 import types
 import inspect
-from request import Request
+from notsofastapi.request import Request
 
 SUPPORTED_REQ_METHODS = {"GET", 'POST', 'DELETE'}
 
